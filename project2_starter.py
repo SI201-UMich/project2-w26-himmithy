@@ -71,14 +71,26 @@ def get_listing_details(listing_id) -> dict:
             }
         }
     """
-    # TODO: Implement checkout logic following the instructions
-    # ==============================
-    # YOUR CODE STARTS HERE
-    # ==============================
-    pass
-    # ==============================
-    # YOUR CODE ENDS HERE
-    # ==============================
+    file_path = f'html_files/listing_{listing_id}.html'
+    with open(file_path, "r", encoding="utf-8-sig") as f:
+        soup = BeautifulSoup(f, "html.parser")
+
+        # Extract details using appropriate tags and classes
+        policy_number = soup.find("div", class_="policy-number").get_text().strip()
+        host_type = soup.find("div", class_="host-type").get_text().strip()
+        host_name = soup.find("div", class_="host-name").get_text().strip()
+        room_type = soup.find("div", class_="room-type").get_text().strip()
+        location_rating = float(soup.find("div", class_="location-rating").get_text().strip())
+
+    return {
+        listing_id: {
+            "policy_number": policy_number,
+            "host_type": host_type,
+            "host_name": host_name,
+            "room_type": room_type,
+            "location_rating": location_rating
+        }
+    }
 
 
 def create_listing_database(html_path) -> list[tuple]:
