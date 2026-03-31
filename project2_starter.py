@@ -104,14 +104,15 @@ def create_listing_database(html_path) -> list[tuple]:
         list[tuple]: A list of tuples. Each tuple contains:
         (listing_title, listing_id, policy_number, host_type, host_name, room_type, location_rating)
     """
-    # TODO: Implement checkout logic following the instructions
-    # ==============================
-    # YOUR CODE STARTS HERE
-    # ==============================
-    pass
-    # ==============================
-    # YOUR CODE ENDS HERE
-    # ==============================
+    listings = load_listing_results(html_path)
+    database = []
+
+    for title, listing_id in listings:
+        details = get_listing_details(listing_id)
+        listing_data = details[listing_id]
+        database.append((title, listing_id, listing_data["policy_number"], listing_data["host_type"], listing_data["host_name"], listing_data["room_type"], listing_data["location_rating"]))
+
+    return database
 
 
 def output_csv(data, filename) -> None:
