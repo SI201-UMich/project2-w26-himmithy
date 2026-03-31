@@ -128,14 +128,12 @@ def output_csv(data, filename) -> None:
     Returns:
         None
     """
-    # TODO: Implement checkout logic following the instructions
-    # ==============================
-    # YOUR CODE STARTS HERE
-    # ==============================
-    pass
-    # ==============================
-    # YOUR CODE ENDS HERE
-    # ==============================
+    data_sorted = sorted(data, key=lambda x: x[6], reverse=True)
+    with open(filename, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["Listing Title", "Listing ID", "Policy Number", "Host Type", "Host Name", "Room Type", "Location Rating"])
+        writer.writerows(data_sorted)
+
 
 
 def avg_location_rating_by_room_type(data) -> dict:
@@ -151,14 +149,23 @@ def avg_location_rating_by_room_type(data) -> dict:
     Returns:
         dict: {room_type: average_location_rating}
     """
-    # TODO: Implement checkout logic following the instructions
-    # ==============================
-    # YOUR CODE STARTS HERE
-    # ==============================
-    pass
-    # ==============================
-    # YOUR CODE ENDS HERE
-    # ==============================
+    room_type_ratings = {}
+    room_type_counts = {}
+
+    for listing in data:
+        room_type = listing[5]
+        location_rating = listing[6]
+
+        if location_rating != 0.0:
+            if room_type not in room_type_ratings:
+                room_type_ratings[room_type] = 0.0
+                room_type_counts[room_type] = 0
+
+            room_type_ratings[room_type] += location_rating
+            room_type_counts[room_type] += 1
+
+    avg_ratings = {room: (room_type_ratings[room] / room_type_counts[room]) for room in room_type_ratings}
+    return avg_ratings
 
 
 def validate_policy_numbers(data) -> list[str]:
