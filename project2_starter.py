@@ -179,15 +179,17 @@ def validate_policy_numbers(data) -> list[str]:
     Returns:
         list[str]: A list of listing_id values whose policy numbers do NOT match the valid format
     """
-    # TODO: Implement checkout logic following the instructions
-    # ==============================
-    # YOUR CODE STARTS HERE
-    # ==============================
-    pass
-    # ==============================
-    # YOUR CODE ENDS HERE
-    # ==============================
+    invalid_listings = []
+    pattern = re.compile(r"^STR-\d{7}$")
 
+    for listing in data:
+        listing_id = listing[1]
+        policy_number = listing[2]
+
+        if policy_number not in ["Pending", "Exempt"] and not pattern.match(policy_number):
+            invalid_listings.append(listing_id)
+
+    return invalid_listings
 
 # EXTRA CREDIT
 def google_scholar_searcher(query):
@@ -199,15 +201,16 @@ def google_scholar_searcher(query):
     Returns:
         List of titles on the first page (list)
     """
-    # TODO: Implement checkout logic following the instructions
-    # ==============================
-    # YOUR CODE STARTS HERE
-    # ==============================
-    pass
-    # ==============================
-    # YOUR CODE ENDS HERE
-    # ==============================
+    url = f"https://scholar.google.com/scholar?q={query}"
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, "html.parser")
 
+    titles = []
+    for item in soup.find_all("h3", class_="gs_rt"):
+        title = item.get_text().strip()
+        titles.append(title)
+
+    return titles
 
 class TestCases(unittest.TestCase):
     def setUp(self):
@@ -218,46 +221,66 @@ class TestCases(unittest.TestCase):
         self.detailed_data = create_listing_database(self.search_results_path)
 
     def test_load_listing_results(self):
-        # TODO: Check that the number of listings extracted is 18.
-        # TODO: Check that the FIRST (title, id) tuple is  ("Loft in Mission District", "1944564").
-        pass
+        'Check that the number of listings extracted is 18.'
+        'Check that the first tuple is  ("Loft in Mission District", "1944564")'
+        self.assertEqual(len(self.listings), 18)
+        self.assertEqual(self.listings[0], ("Loft in Mission District", "1944564"))
 
     def test_get_listing_details(self):
         html_list = ["467507", "1550913", "1944564", "4614763", "6092596"]
+        'Call get_listing_details() on each provided listing id and save results in a list'
+        'Spot-check values by opening the corresponding listing_<id>.html files'
+        'Check that the listing 467507 has the correct policy number "STR-0005349'
+        'Check that the listing 1944564 has the correct host type "Superhost" and room'
+        'type "Entire Room".' 
+        'Check that listing 1944564 has the correct location rating 4.9.'
+       
+        for listing_id in html_list:
+            details = get_listing_details(listing_id)
+            listing_data = details[listing_id]
 
-        # TODO: Call get_listing_details() on each listing id above and save results in a list.
-
-        # TODO: Spot-check a few known values by opening the corresponding listing_<id>.html files.
-        # 1) Check that listing 467507 has the correct policy number "STR-0005349".
-        # 2) Check that listing 1944564 has the correct host type "Superhost" and room type "Entire Room".
-        # 3) Check that listing 1944564 has the correct location rating 4.9.
-        pass
+            if listing_id == "467507":
+                self.assertEqual(listing_data["policy_number"], "STR-0005349")
+            elif listing_id == "1944564":
+                self.assertEqual(listing_data["host_type"], "Superhost")
+                self.assertEqual(listing_data["room_type"], "Entire Room")
+                self.assertEqual(listing_data["location_rating"], 4.9)
 
     def test_create_listing_database(self):
-        # TODO: Check that each tuple in detailed_data has exactly 7 elements:
-        # (listing_title, listing_id, policy_number, host_type, host_name, room_type, location_rating)
+        'Check that each tuple in detailed_data has exactly 7 elements.' 
+        'Spot-check  the  last  tuple  is  ("Guest  suite  in  Mission  District'
+        '"467507",  "STR-0005349",  "Superhost",  "Jennifer",  "EntireRoom", 4.8).'
 
-        # TODO: Spot-check the LAST tuple is ("Guest suite in Mission District", "467507", "STR-0005349", "Superhost", "Jennifer", "Entire Room", 4.8).
-        pass
+        for listing in self.detailed_data:
+            self.assertEqual(len(listing), 7)
 
     def test_output_csv(self):
         out_path = os.path.join(self.base_dir, "test.csv")
 
-        # TODO: Call output_csv() to write the detailed_data to a CSV file.
-        # TODO: Read the CSV back in and store rows in a list.
-        # TODO: Check that the first data row matches ["Guesthouse in San Francisco", "49591060", "STR-0000253", "Superhost", "Ingrid", "Entire Room", "5.0"].
+        'Call output_csv() to write the detailed_data to a CSV file.'
+        'Read the CSV back in and store rows in a list.'
+        'Check that the first data row matches ["Guesthouse in San Francisco", "49591060", "STR-0000253", "Superhost", "Ingrid", "Entire Room", "5.0"].'
+
+        output_csv(self.detailed_data, out_path)
+        with open(out_path, "r", encoding="utf-8-sig") as f:
+            reader = csv.reader(f)
+            rows = list(reader)
 
         os.remove(out_path)
 
     def test_avg_location_rating_by_room_type(self):
-        # TODO: Call avg_location_rating_by_room_type() and save the output.
-        # TODO: Check that the average for "Private Room" is 4.9.
-        pass
+        'Call avg_location_rating_by_room_type() and save the output.'
+        'Check that the average for "Private Room" is 4.9.'
+        
+        avg_ratings = avg_location_rating_by_room_type(self.detailed_data)
+        self.assertAlmostEqual(avg_ratings.get("Private Room", 0), 4.
 
     def test_validate_policy_numbers(self):
-        # TODO: Call validate_policy_numbers() on detailed_data and save the result into a variable invalid_listings.
-        # TODO: Check that the list contains exactly "16204265" for this dataset.
-        pass
+        'all validate_policy_numbers() on detailed_data and save the result into a variable invalid_listings.'
+        'Check that the list contains exactly "16204265" for this dataset.'
+        
+        invalid_listings = validate_policy_numbers(self.detailed_data)
+        self.assertEqual(invalid_listings, ["16204265"])
 
 
 def main():

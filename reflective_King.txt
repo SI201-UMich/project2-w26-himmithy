@@ -1,0 +1,10 @@
+Name: King
+
+Question 1:
+I believe the current system for regulating Airbnb listings provides some level of accountability, but it is limited. While hosts are required to register and Airbnb displays policy numbers, enforcement depends heavily on complaints rather than proactive monitoring. This creates gaps where illegal listings can exist without consequences. A potential improvement would be implementing automated verification systems that cross-check listings with government databases. This would reduce reliance on third-party reporting and increase accountability.
+
+Question 2:
+One important factor in determining the legality of web scraping is whether the data is publicly accessible and whether scraping violates a website’s terms of service. Even if data is publicly available, accessing it through automated means may still raise legal concerns under laws like the Computer Fraud and Abuse Act. This distinction is important because it affects how data can be ethically and legally collected.
+
+Question 3:
+One important guideline for web scraping is to respect user privacy, even if the data is publicly available. Just because data can be accessed does not mean it should be used without considering potential harm. Another guideline is to follow a website’s terms of service and avoid scraping in ways that could harm the platform or overload its servers. Ethical scraping should prioritize transparency, responsibility, and minimizing harm.
